@@ -23,7 +23,7 @@ public class DatabaseProvider extends ContentProvider {
     public static final int ALL_RECORDS = 0;
     public static final int LAST_RECORD = 1;
     public static final int SEVEN_RECORDS = 2;
-    public static final int CITY = 3;
+//    public static final int CITY = 3;
 
     @Override
     public boolean onCreate() {
@@ -35,10 +35,10 @@ public class DatabaseProvider extends ContentProvider {
 
     static {
 //        matcher.addURI(DatabaseContract.AUTHORITY, DatabaseContract.ClassInfo.LIMIT, 1);
-        matcher.addURI(DatabaseContract.AUTHORITY, DatabaseContract.PATH_CLASSINFO + "/0", ALL_RECORDS);
-        matcher.addURI(DatabaseContract.AUTHORITY, DatabaseContract.PATH_CLASSINFO + "/1", LAST_RECORD);
-        matcher.addURI(DatabaseContract.AUTHORITY, DatabaseContract.PATH_CLASSINFO + "/2", SEVEN_RECORDS);
-        matcher.addURI(DatabaseContract.AUTHORITY, DatabaseContract.PATH_CITYINFO + "/3", CITY);
+        matcher.addURI(DatabaseContract.AUTHORITY, DatabaseContract.PATH_QUOTE_INFO+ "/0", ALL_RECORDS);
+        matcher.addURI(DatabaseContract.AUTHORITY, DatabaseContract.PATH_QUOTE_INFO + "/1", LAST_RECORD);
+        matcher.addURI(DatabaseContract.AUTHORITY, DatabaseContract.PATH_QUOTE_INFO + "/2", SEVEN_RECORDS);
+//        matcher.addURI(DatabaseContract.AUTHORITY, DatabaseContract.PATH_CITYINFO + "/3", CITY);
     }
 
     @Nullable
@@ -51,27 +51,27 @@ public class DatabaseProvider extends ContentProvider {
         switch (match) {
             case LAST_RECORD:
                 String[] _id = selectionArgs;
-                cursorData = databaseHelper.getReadableDatabase().query(DatabaseContract.ClassInfo.TABLE_NAME, projection, selection, selectionArgs, sortOrder, null, DatabaseContract.ClassInfo.COLUMN_DATE + " DESC ", " 1");
+                cursorData = databaseHelper.getReadableDatabase().query(DatabaseContract.QuoteInfo.TABLE_NAME, projection, selection, selectionArgs, sortOrder, null, DatabaseContract.QuoteInfo.COLUMN_SNo + " DESC ", " 1");
                 cursorData.setNotificationUri(getContext().getContentResolver(), uri);
                 break;
 
             case SEVEN_RECORDS:
                 Log.v("Sateesh: ", "*** selection value is: " +selection);
                 Log.v("Sateesh: ", "*** selection filter is: " +selectionArgs);
-                cursorData = databaseHelper.getReadableDatabase().query(DatabaseContract.ClassInfo.TABLE_NAME, projection, selection, selectionArgs, null, null, DatabaseContract.ClassInfo.COLUMN_DATE + " DESC ", " 7");
+                cursorData = databaseHelper.getReadableDatabase().query(DatabaseContract.QuoteInfo.TABLE_NAME, projection, selection, selectionArgs, null, null, DatabaseContract.QuoteInfo.COLUMN_CREATED_DATE + " DESC ", " 7");
                 Log.v("Sateesh: ", "*** cursor filtered data: " + DatabaseUtils.dumpCursorToString(cursorData));
                 cursorData.setNotificationUri(getContext().getContentResolver(), uri);
                 break;
 
-            case CITY:
-                cursorData = databaseHelper.getReadableDatabase().query(DatabaseContract.CityInfo.TABLE_NAME, null, null, null, null, null, null, null);
-                cursorData.setNotificationUri(getContext().getContentResolver(), uri);
-                break;
+//            case CITY:
+//                cursorData = databaseHelper.getReadableDatabase().query(DatabaseContract.CityInfo.TABLE_NAME, null, null, null, null, null, null, null);
+//                cursorData.setNotificationUri(getContext().getContentResolver(), uri);
+//                break;
 
             case ALL_RECORDS:
                 Log.v("Sateesh: ", "*** selection value is: " +selection);
                 Log.v("Sateesh: ", "*** selection filter is: " +selectionArgs);
-                cursorData = databaseHelper.getReadableDatabase().query(DatabaseContract.ClassInfo.TABLE_NAME, projection, selection, selectionArgs, null, null, DatabaseContract.ClassInfo.COLUMN_DATE + " ASC ", null);
+                cursorData = databaseHelper.getReadableDatabase().query(DatabaseContract.QuoteInfo.TABLE_NAME, projection, selection, selectionArgs, null, null, DatabaseContract.QuoteInfo.COLUMN_CREATED_DATE + " ASC ", null);
                 Log.v("Sateesh: ", "*** cursor filtered data: " + DatabaseUtils.dumpCursorToString(cursorData));
                 cursorData.setNotificationUri(getContext().getContentResolver(), uri);
                 break;
@@ -102,31 +102,31 @@ public class DatabaseProvider extends ContentProvider {
         int insertedRecords = 0;
         final int match = matcher.match(uri);
         switch (match) {
-            case CITY:
-                writeToDatabase.beginTransaction();
-                try {
-                    for (ContentValues value : values) {
-                        long insertRecord = writeToDatabase.insert(DatabaseContract.CityInfo.TABLE_NAME, null, value);
-                        if (insertRecord > 0) {
-                            ContentUris.withAppendedId(uri, insertRecord);
-                            Log.v(LOG_CAT, "*** Inserted City Record is: " + ContentUris.withAppendedId(uri, insertRecord));
-                            insertedRecords++;
-                        } else {
-                            Log.v(LOG_CAT, "*** No City records to Insert");
-                        }
-                    }
-                    writeToDatabase.setTransactionSuccessful();
-                } finally {
-                    writeToDatabase.endTransaction();
-                }
-                getContext().getContentResolver().notifyChange(uri, null);
-                break;
+//            case CITY:
+//                writeToDatabase.beginTransaction();
+//                try {
+//                    for (ContentValues value : values) {
+//                        long insertRecord = writeToDatabase.insert(DatabaseContract.CityInfo.TABLE_NAME, null, value);
+//                        if (insertRecord > 0) {
+//                            ContentUris.withAppendedId(uri, insertRecord);
+//                            Log.v(LOG_CAT, "*** Inserted City Record is: " + ContentUris.withAppendedId(uri, insertRecord));
+//                            insertedRecords++;
+//                        } else {
+//                            Log.v(LOG_CAT, "*** No City records to Insert");
+//                        }
+//                    }
+//                    writeToDatabase.setTransactionSuccessful();
+//                } finally {
+//                    writeToDatabase.endTransaction();
+//                }
+//                getContext().getContentResolver().notifyChange(uri, null);
+//                break;
 
             case ALL_RECORDS:
                 writeToDatabase.beginTransaction();
                 try {
                     for (ContentValues records : values) {
-                        long insertRecord = writeToDatabase.insert(DatabaseContract.ClassInfo.TABLE_NAME, null, records);
+                        long insertRecord = writeToDatabase.insert(DatabaseContract.QuoteInfo.TABLE_NAME, null, records);
                         if (insertRecord > 0) {
                             ContentUris.withAppendedId(uri, insertRecord);
                             Log.v(LOG_CAT, "*** Inserted Record is: " + ContentUris.withAppendedId(uri, insertRecord));
@@ -158,7 +158,7 @@ public class DatabaseProvider extends ContentProvider {
         int delete = 0;
         switch (match) {
             case ALL_RECORDS:
-            delete = databaseHelper.getWritableDatabase().delete(DatabaseContract.ClassInfo.TABLE_NAME, null, null);
+            delete = databaseHelper.getWritableDatabase().delete(DatabaseContract.QuoteInfo.TABLE_NAME, null, null);
             if (delete > 0) {
                 ContentUris.withAppendedId(uri, delete);
                 Log.v("Sateesh: ", "**** Data records deleted " + delete);
@@ -172,18 +172,18 @@ public class DatabaseProvider extends ContentProvider {
             getContext().getContentResolver().notifyChange(uri, null);
                 break;
 
-            case CITY:
-                delete = databaseHelper.getWritableDatabase().delete(DatabaseContract.CityInfo.TABLE_NAME, null, null);
-                if (delete > 0) {
-                    ContentUris.withAppendedId(uri, delete);
-                    Log.v("Sateesh: ", "**** City records deleted " + delete);
-                } else {
-                    try {
-                        throw new SQLException("No City records to Delete" + uri);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
+//            case CITY:
+//                delete = databaseHelper.getWritableDatabase().delete(DatabaseContract.CityInfo.TABLE_NAME, null, null);
+//                if (delete > 0) {
+//                    ContentUris.withAppendedId(uri, delete);
+//                    Log.v("Sateesh: ", "**** City records deleted " + delete);
+//                } else {
+//                    try {
+//                        throw new SQLException("No City records to Delete" + uri);
+//                    } catch (SQLException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
         }
         return delete;
     }

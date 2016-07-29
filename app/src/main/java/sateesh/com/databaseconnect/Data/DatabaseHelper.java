@@ -27,6 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         final String CREATE_QUOTE_INFO_TABLE = "CREATE TABLE " + DatabaseContract.QuoteInfo.TABLE_NAME  +
                 "( "  + DatabaseContract.QuoteInfo._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                DatabaseContract.QuoteInfo.COLUMN_SNo + " INT NOT NULL, " +
                 DatabaseContract.QuoteInfo.COLUMN_CREATED_DATE + " LONG NOT NULL, " +
                 DatabaseContract.QuoteInfo.COLUMN_CREATED_TIME + " LONG NOT NULL, " +
                 DatabaseContract.QuoteInfo.COLUMN_AUTHOR + " TEXT NOT NULL, " +

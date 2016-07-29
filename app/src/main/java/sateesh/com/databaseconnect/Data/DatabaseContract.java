@@ -7,7 +7,7 @@ import android.net.Uri;
  */
 public class DatabaseContract {
 
-    public static final String AUTHORITY = "sateesh.com.DatabaseContract";
+    public static final String AUTHORITY = "sateesh.com.databaseconnect";
     public static final Uri BASIC_URI = Uri.parse("content://" + AUTHORITY);
     public static final String PATH_QUOTE_INFO = "QuoteInfo";
 
@@ -18,6 +18,7 @@ public class DatabaseContract {
         public static final String TABLE_NAME = "QuoteInfo";
 
         public static final String _ID = "_id";
+        public static final String COLUMN_SNo = "SNo";
         public static final String COLUMN_CREATED_DATE = "CreatedDate";
         public static final String COLUMN_CREATED_TIME = "Time";
         public static final String COLUMN_AUTHOR = "Author";
